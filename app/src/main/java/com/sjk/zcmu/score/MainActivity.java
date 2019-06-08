@@ -2,13 +2,8 @@ package com.sjk.zcmu.score;
 
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -55,10 +50,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static com.sjk.zcmu.score.utils.SBitmap.ZCMU_SCORE;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
-    private static final String ZJTCM_URL = "http://zfxk.zjtcm.net/";
-    private static final String USER_AGENT = "Mozilla/5.0( X11;Ubuntu;Linux x86_64 ;rv:61.0) Gecko20100101Firefox/61.0";
+    public static final String ZJTCM_URL = "http://zfxk.zjtcm.net/";
+    //private static final String USER_AGENT = "Mozilla/5.0( X11;Ubuntu;Linux x86_64 ;rv:61.0) Gecko20100101Firefox/61.0";
+    private static final String USER_AGENT = "zcmu_score(by SJK)";
+    private static final String NOMEDIA = ".nomedia";
     private String checkCodeUrl;
     private String submitUrl;
     private String __VIEWSTATE;
@@ -80,7 +79,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private List<Integer> clickViews = Arrays.asList(
             R.id.submit,
             R.id.check_code_image,
-            R.id.check_code_layout
+            R.id.check_code_layout,
+            R.id.use_web
     );
 
     /*
@@ -202,6 +202,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             SPermissions.requestPermissions(this);
         }
 
+        initNoMedia();
         setViewClick();
     }
 
@@ -239,6 +240,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.check_code_image: {
                 initZJTCM();
                 break;
+            }
+            case R.id.use_web: {
+                Intent intent = new Intent(this, WebActivity.class);
+                startActivity(intent);
             }
             default: {
                 break;
@@ -499,5 +504,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
             }
         }).start();
+    }
+
+    private void initNoMedia() {
+        try {
+            File no = new File(Environment.getExternalStorageDirectory().getCanonicalPath() + "/" + ZCMU_SCORE + "/" + NOMEDIA);
+            if (!no.exists()) {
+                no.createNewFile();
+            }
+        } catch (Exception e) {
+            System.err.println("创建.nomedia文件失败");
+        }
     }
 }
