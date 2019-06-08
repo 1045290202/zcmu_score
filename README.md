@@ -1,0 +1,2 @@
+# zcmu_score
+一个Android端查询浙江中医药大学学生成绩的APP
