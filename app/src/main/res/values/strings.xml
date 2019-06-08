@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">浙中医大成绩查询</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+</resources>
