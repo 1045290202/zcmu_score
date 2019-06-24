@@ -14,11 +14,13 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuItemCompat;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bin.david.form.core.SmartTable;
 import com.bin.david.form.core.TableConfig;
@@ -74,6 +76,7 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
     private Column<String> englishNameOfCourse;
 
     private List<Integer> clickViews = Arrays.asList(
+            R.id.clear,
             R.id.compute
     );
 
@@ -206,6 +209,33 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.clear: {
+                MaterialDialog materialDialog = new MaterialDialog.Builder(this)
+                        .title("清除")
+                        .content("真要要清除当前筛选列表中已选中的项目吗？")
+                        .positiveText("确定")
+                        .negativeText("取消")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                for (int i = 0, l = nowScoreTableBeanList.size(); i < l; i++) {
+                                    nowScoreTableBeanList.get(i).setOperation(false);
+                                }
+                                TableData<ScoreTableBean> tableData = getTableData(nowScoreTableBeanList);
+                                table.setTableData(tableData);
+                                table.invalidate();
+                            }
+                        })
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                            }
+                        })
+                        .build();
+                materialDialog.show();
+                break;
+            }
             case R.id.compute: {//计算加权平均几绩点
                 List<ScoreTableBean> list = new ArrayList<>();
                 for (ScoreTableBean scoreTableBean : scoreTableBeanList) {
