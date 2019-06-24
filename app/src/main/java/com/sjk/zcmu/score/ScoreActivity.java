@@ -481,7 +481,7 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
         FontStyle style = new FontStyle();
         style.setTextSpSize(this, 13);
         table.getConfig().setContentStyle(style);
-        table.setZoom(true);
+        table.setZoom(false);
         table.getConfig().setZoom(1);
         table.getConfig().setShowTableTitle(false);
         table.setOnColumnClickListener(new OnColumnClickListener() {
