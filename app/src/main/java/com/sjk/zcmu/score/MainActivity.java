@@ -2,6 +2,7 @@ package com.sjk.zcmu.score;
 
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -10,7 +11,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -78,7 +82,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private List<Integer> clickViews = Arrays.asList(
             R.id.submit,
-            R.id.check_code_image,
             R.id.check_code_layout,
             R.id.use_web
     );
@@ -105,12 +108,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     break;
                 }
                 case 2: {
+                    waitDialog.setProgress(50);
                     getScore();
 //                    Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
 //                    startActivity(intent);
                     break;
                 }
                 case 3: {
+                    waitDialog.setProgress(90);
+
                     Element tbody = ((Elements) msg.obj).get(0);
 
                     List<String> nameList = new ArrayList<>();
@@ -133,6 +139,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         }
                         i++;
                     }
+
+                    waitDialog.setProgress(95);
 
                     List<ScoreTableBean> scoreTableBeanList = new ArrayList<>();
                     List<String> schoolYearList = new ArrayList<>();
@@ -164,6 +172,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     schoolYearList.addAll(hashSet);
                     Info.setSchoolYearList(schoolYearList);
 
+                    waitDialog.setProgress(100);
                     waitDialog.dismiss();
 
                     Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
@@ -192,6 +201,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         TextView vpnText = findViewById(R.id.vpn_text);
         vpnText.setText(Html.fromHtml("无法查询？试试下载<a href=\"https://vpn.zcmu.edu.cn\">浙中医大VPN</a>"));
         vpnText.setMovementMethod(LinkMovementMethod.getInstance());
+
+        TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                    //隐藏软键盘
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+                    login();
+                }
+                return false;
+            }
+        };
+
+        EditText check_code = findViewById(R.id.check_code);
+        check_code.setOnEditorActionListener(onEditorActionListener);
 
         if (SPermissions.checkStoragePermissions(this)) {
             haveStoragePermissions = true;
@@ -236,8 +261,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 login();
                 break;
             }
-            case R.id.check_code_layout:
-            case R.id.check_code_image: {
+            case R.id.check_code_layout:{
                 initZJTCM();
                 break;
             }
@@ -408,11 +432,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         waitDialog = new MaterialDialog.Builder(this)
                 .title("正在努力获取数据")
                 .content("加载中...")
-                .progress(true, 100, true)
+                .progress(false, 100, false)
                 .canceledOnTouchOutside(false)
                 .cancelable(false)
                 .build();
         waitDialog.show();
+        waitDialog.setProgress(1);
 
         studentId = username;
 
@@ -420,6 +445,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void run() {
                 try {
+                    waitDialog.setProgress(10);
                     Connection con = Jsoup.connect(submitUrl);
                     con.cookies(cookies)
                             .data("__VIEWSTATE", __VIEWSTATE)
@@ -433,9 +459,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             .data("hidPdrs", "")
                             .data("hidsc", "")
                             .userAgent(USER_AGENT);
+
+                    waitDialog.setProgress(15);
+
                     Connection.Response resp = con.execute();
                     doc = con.get();
                     cookies = resp.cookies();
+
+                    waitDialog.setProgress(20);
 
                     Message message = new Message();
                     message.what = 2;
@@ -462,6 +493,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         System.out.println("姓名：" + name);
         System.out.println("学号：" + studentId);
 
+        waitDialog.setProgress(65);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -474,11 +507,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             .userAgent(USER_AGENT);
                     doc = con.post();
 
+                    waitDialog.setProgress(70);
+
                     ///
                     String __VIEWSTATE = doc.select("input[name=__VIEWSTATE]").val();
                     String __VIEWSTATEGENERATOR = doc.select("input[name=__VIEWSTATEGENERATOR]").val();
                     System.out.println(__VIEWSTATE);
                     ///
+
+                    waitDialog.setProgress(80);
 
                     //成绩查询
                     con = Jsoup.connect(ZJTCM_URL + "xscj_gc.aspx?xh=" + studentId + "&xm=" + name + "&gnmkdm=N121605");
@@ -490,6 +527,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             .userAgent(USER_AGENT)
                             .header("Referer", ZJTCM_URL + "xs_main.aspx?xh=" + studentId);
                     doc = con.post();
+
+                    waitDialog.setProgress(85);
 
                     //开始解析文档，获取成绩
                     Elements tbody = doc.select("table#Datagrid1").select("tbody");

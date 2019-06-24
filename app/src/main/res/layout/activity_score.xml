@@ -5,25 +5,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="16dp"
     tools:context=".ScoreActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
 
-        <com.jaredrummler.materialspinner.MaterialSpinner
-            android:id="@+id/school_year_spinner"
-            android:layout_width="match_parent"
+        <RadioGroup
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="正常" />
+
+            <RadioButton
+                android:id="@+id/checked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="已选择" />
+
+            <RadioButton
+                android:id="@+id/not_checked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="未选择" />
+        </RadioGroup>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <com.jaredrummler.materialspinner.MaterialSpinner
-            android:id="@+id/term_spinner"
-            android:layout_width="match_parent"
+        <ImageButton
+            android:src="@drawable/ic_assignment"
+            android:id="@+id/compute"
+            android:layout_width="48dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            style="@style/Widget.AppCompat.Button.Borderless" />
     </LinearLayout>
 
     <com.bin.david.form.core.SmartTable
@@ -32,9 +59,53 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <TextView
+    <!--<TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="提示：标红的分数为不及格分数，需要继续努力哦！"
-        android:textSize="14sp" />
+        android:textSize="14sp" />-->
+
+    <TextView
+        android:id="@+id/tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="选择正常模式以启用学年学期选择功能"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/spinners"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/school_year_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:ms_alignLabels="false"
+            app:ms_arrowSize="12dp"
+            app:ms_enableErrorLabel="false"
+            app:ms_enableFloatingLabel="false"
+            app:ms_hintTextSize="16sp"
+            app:ms_multiline="true"
+            app:ms_thickness="0dp" />
+
+        <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/term_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:ms_alignLabels="false"
+            app:ms_arrowSize="12dp"
+            app:ms_enableErrorLabel="false"
+            app:ms_enableFloatingLabel="false"
+            app:ms_hintTextSize="16sp"
+            app:ms_multiline="true"
+            app:ms_thickness="0dp" />
+    </LinearLayout>
 </LinearLayout>

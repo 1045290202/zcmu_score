@@ -31,8 +31,6 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp" />
 
-                <include layout="@layout/layout_divider" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -55,8 +53,6 @@
                         android:layout_height="wrap_content"
                         android:checked="true" />
                 </LinearLayout>
-
-                <include layout="@layout/layout_divider" />
             </LinearLayout>
 
             <LinearLayout
@@ -71,8 +67,6 @@
                     android:text="实验性设置"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp" />
-
-                <include layout="@layout/layout_divider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -97,13 +91,11 @@
                         android:checked="false" />
                 </LinearLayout>
 
-                <include layout="@layout/layout_divider" />
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="实验性设置不稳定，可能随着版本更迭删除、添加或更改"
+                    android:text="实验性设置不稳定，可能随着版本迭代删除、添加或更改"
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>

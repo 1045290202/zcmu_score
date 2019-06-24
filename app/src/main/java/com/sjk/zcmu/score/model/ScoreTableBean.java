@@ -5,37 +5,39 @@ import com.bin.david.form.annotation.SmartTable;
 
 @SmartTable(name = "所有成绩")
 public class ScoreTableBean {
-    @SmartColumn(id = 0, name = "学年")
+    @SmartColumn(id = 1, name = "选择")
+    private Boolean operation = false;
+    @SmartColumn(id = 2, name = "学年")
     private String schoolYear;
-    @SmartColumn(id = 1, name = "学期")
+    @SmartColumn(id = 3, name = "学期")
     private String term;
-    @SmartColumn(id = 2, name = "课程代码")
+    @SmartColumn(id = 4, name = "课程代码")
     private String courseCode;
-    @SmartColumn(id = 3, name = "课程名称")
+    @SmartColumn(id = 5, name = "课程名称")
     private String courseName;
-    @SmartColumn(id = 4, name = "课程性质")
+    @SmartColumn(id = 6, name = "课程性质")
     private String courseNature;
-    @SmartColumn(id = 5, name = "课程归属")
+    @SmartColumn(id = 7, name = "课程归属")
     private String courseAttach;
-    @SmartColumn(id = 6, name = "学分")
+    @SmartColumn(id = 8, name = "学分")
     private String credit;
-    @SmartColumn(id = 7, name = "绩点")
+    @SmartColumn(id = 9, name = "绩点")
     private String point;
-    @SmartColumn(id = 8, name = "成绩")
+    @SmartColumn(id = 10, name = "成绩")
     private String score;
-    @SmartColumn(id = 9, name = "辅修标记")
+    @SmartColumn(id = 11, name = "辅修标记")
     private String minorMark;
-    @SmartColumn(id = 10, name = "补考成绩")
+    @SmartColumn(id = 12, name = "补考成绩")
     private String makeUpScore;
-    @SmartColumn(id = 11, name = "重修成绩")
+    @SmartColumn(id = 13, name = "重修成绩")
     private String retakeScore;
-    @SmartColumn(id = 12, name = "学院名称")
+    @SmartColumn(id = 14, name = "学院名称")
     private String collegeName;
-    @SmartColumn(id = 13, name = "备注")
+    @SmartColumn(id = 15, name = "备注")
     private String remark;
-    @SmartColumn(id = 14, name = "重修标记")
+    @SmartColumn(id = 16, name = "重修标记")
     private String retakeMark;
-    @SmartColumn(id = 15, name = "课程英文名称")
+    @SmartColumn(id = 17, name = "课程英文名称")
     private String englishNameOfCourse;
 
     public ScoreTableBean(String schoolYear, String term, String courseCode, String courseName, String courseNature, String courseAttach, String credit, String point, String score, String minorMark, String makeUpScore, String retakeScore, String collegeName, String remark, String retakeMark, String englishNameOfCourse) {
@@ -183,5 +185,13 @@ public class ScoreTableBean {
 
     public void setEnglishNameOfCourse(String englishNameOfCourse) {
         this.englishNameOfCourse = englishNameOfCourse;
+    }
+
+    public Boolean getOperation() {
+        return operation;
+    }
+
+    public void setOperation(Boolean operation) {
+        this.operation = operation;
     }
 }
