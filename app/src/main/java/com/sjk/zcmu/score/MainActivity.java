@@ -59,6 +59,7 @@ import static com.sjk.zcmu.score.utils.SBitmap.ZCMU_SCORE;
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public static final String ZJTCM_URL = "http://zfxk.zjtcm.net/";
+    public static String zf;
     //private static final String USER_AGENT = "Mozilla/5.0( X11;Ubuntu;Linux x86_64 ;rv:61.0) Gecko20100101Firefox/61.0";
     private static final String USER_AGENT = "zcmu_score(by SJK)";
     private static final String NOMEDIA = ".nomedia";
@@ -68,6 +69,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private String __VIEWSTATEGENERATOR;
 
     private static Document doc;
+    private static Document doc1;
     private static Map<String, String> cookies;
     private boolean haveStoragePermissions = false;
     private boolean useHistory = true;
@@ -109,6 +111,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 case 2: {
                     waitDialog.setProgress(50);
+                    doc1 = doc;
                     getScore();
 //                    Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
 //                    startActivity(intent);
@@ -176,11 +179,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     waitDialog.dismiss();
 
                     Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, 1);
 
-                    EditText checkCodeText = findViewById(R.id.check_code);
+                    /*EditText checkCodeText = findViewById(R.id.check_code);
                     checkCodeText.setText("");
-                    initZJTCM();
+                    initZJTCM();*/
+                    break;
+                }
+                case 4: {
+                    Toast.makeText(MainActivity.this, "网址好像有问题哦，已经替换为默认网址", Toast.LENGTH_SHORT).show();
                     break;
                 }
                 default: {
@@ -191,11 +198,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     };
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @androidx.annotation.Nullable Intent data) {
+        switch (resultCode) {
+            case 0: {
+                EditText checkCodeText = findViewById(R.id.check_code);
+                checkCodeText.setText("");
+                initZJTCM();
+                break;
+            }
+            case 1: {
+                waitDialog.show();
+                waitDialog.setProgress(50);
+                getScore();
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Hawk.init(this).build();
+        zf = Hawk.get("zf", ZJTCM_URL);
 
         checkCodeImage = findViewById(R.id.check_code_image);
         TextView vpnText = findViewById(R.id.vpn_text);
@@ -261,7 +291,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 login();
                 break;
             }
-            case R.id.check_code_layout:{
+            case R.id.check_code_layout: {
                 initZJTCM();
                 break;
             }
@@ -307,7 +337,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             public void run() {
                 Document doc;
                 try {
-                    Connection con = Jsoup.connect(ZJTCM_URL);
+                    Connection con;
+                    try {
+                        con = Jsoup.connect(zf);
+                    } catch (IllegalArgumentException e) {
+                        zf = ZJTCM_URL;
+                        Hawk.put("zf", ZJTCM_URL);
+                        con = Jsoup.connect(zf);
+                        Message message = new Message();
+                        message.what = 4;
+                        handler.sendMessage(message);
+                    }
                     Connection.Response resp = con.execute();
                     doc = con.get();
                     cookies = resp.cookies();
@@ -327,7 +367,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initCheckCode(Document doc) {
-        checkCodeUrl = ZJTCM_URL + doc.select("img#icode").attr("src");
+        checkCodeUrl = zf + doc.select("img#icode").attr("src");
         downloadCheckCodeImage(checkCodeUrl);
     }
 
@@ -362,7 +402,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
                         waitDialog.dismiss();
-                        Toast.makeText(MainActivity.this, "获取验证码失败，请稍后再试", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "获取验证码失败，请检查链接是否出错或稍后再试", Toast.LENGTH_SHORT).show();
                         return false;
                     }
 
@@ -392,7 +432,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     private void initLogin(Document doc) {
-        submitUrl = ZJTCM_URL + doc.select("form#form1").attr("action");
+        submitUrl = zf + doc.select("form#form1").attr("action");
         __VIEWSTATE = doc.select("input[name=__VIEWSTATE]").val();
         __VIEWSTATEGENERATOR = doc.select("input[name=__VIEWSTATEGENERATOR]").val();
     }
@@ -480,6 +520,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void getScore() {
+        doc = doc1;
         name = doc.select("span#xhxm").text().replace("同学", "");
         if (name.equals("")) {
             //失败
@@ -499,11 +540,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void run() {
                 try {
-                    String url = ZJTCM_URL + "xscj_gc.aspx?xh=" + studentId + "&xm=" + name + "&gnmkdm=N121605";
+                    String url = zf + "xscj_gc.aspx?xh=" + studentId + "&xm=" + name + "&gnmkdm=N121605";
                     Connection con = Jsoup.connect(url);
                     con.followRedirects(false);
                     con.cookies(SDocument.getCookies())
-                            .header("Referer", ZJTCM_URL + "xs_main.aspx?xh=" + studentId)
+                            .header("Referer", zf + "xs_main.aspx?xh=" + studentId)
                             .userAgent(USER_AGENT);
                     doc = con.post();
 
@@ -518,14 +559,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     waitDialog.setProgress(80);
 
                     //成绩查询
-                    con = Jsoup.connect(ZJTCM_URL + "xscj_gc.aspx?xh=" + studentId + "&xm=" + name + "&gnmkdm=N121605");
+                    con = Jsoup.connect(zf + "xscj_gc.aspx?xh=" + studentId + "&xm=" + name + "&gnmkdm=N121605");
                     con.followRedirects(false);
                     con.cookies(SDocument.getCookies())
                             .data("__VIEWSTATE", __VIEWSTATE)
                             .data("__VIEWSTATEGENERATOR", __VIEWSTATEGENERATOR)
                             .data("Button2", "在校学习成绩查询")
                             .userAgent(USER_AGENT)
-                            .header("Referer", ZJTCM_URL + "xs_main.aspx?xh=" + studentId);
+                            .header("Referer", zf + "xs_main.aspx?xh=" + studentId);
                     doc = con.post();
 
                     waitDialog.setProgress(85);

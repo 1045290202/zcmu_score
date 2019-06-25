@@ -17,8 +17,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.sjk.zcmu.score.MainActivity.ZJTCM_URL;
-
 public class WebActivity extends AppCompatActivity {
 
     @Override
@@ -39,7 +37,7 @@ public class WebActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.use_browser: {
-                Uri uri = Uri.parse(ZJTCM_URL);
+                Uri uri = Uri.parse(MainActivity.zf);
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
                 break;
@@ -109,6 +107,6 @@ public class WebActivity extends AppCompatActivity {
             }
         });
 
-        webView.loadUrl(ZJTCM_URL);
+        webView.loadUrl(MainActivity.zf);
     }
 }

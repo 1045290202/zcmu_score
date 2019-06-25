@@ -33,10 +33,11 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="60dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
 
                     <TextView
                         android:layout_width="0dp"
@@ -45,6 +46,7 @@
                         android:ellipsize="end"
                         android:lines="1"
                         android:text="记录用户名和密码"
+                        android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
                     <Switch
@@ -70,10 +72,11 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="60dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
 
                     <TextView
                         android:layout_width="0dp"
@@ -82,6 +85,7 @@
                         android:ellipsize="end"
                         android:lines="1"
                         android:text="验证码自动识别（识别率不高）"
+                        android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
                     <Switch
@@ -89,6 +93,36 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="false" />
+                </LinearLayout>
+
+                <include layout="@layout/layout_divider" />
+
+                <LinearLayout
+                    android:id="@+id/url"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/list_bg_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:text="正方教务管理系统链接"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:text="查其他学校正方教务管理系统成绩"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <TextView

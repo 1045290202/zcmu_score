@@ -93,6 +93,23 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intent);
                 break;
             }
+            case R.id.reload: {
+                MaterialDialog materialDialog = new MaterialDialog.Builder(this)
+                        .title("刷新")
+                        .content("确定要刷新吗？")
+                        .negativeText("取消")
+                        .positiveText("确定")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                setResult(1);
+                                finish();
+                            }
+                        })
+                        .build();
+                materialDialog.show();
+                break;
+            }
             default: {
                 break;
             }
@@ -198,6 +215,12 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
 
         table.invalidate();
         setViewClick();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(0);
     }
 
     private void setViewClick() {
